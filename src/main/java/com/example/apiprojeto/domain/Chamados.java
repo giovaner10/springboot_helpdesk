@@ -35,7 +35,7 @@ public class Chamados implements Serializable {
     private String observacoes;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id" )
+    @JoinColumn(name = "cliente_id")
     @JsonIgnore
     private Cliente cliente;
 
