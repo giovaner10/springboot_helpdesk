@@ -1,15 +1,14 @@
 package com.example.apiprojeto.service;
 
+import com.example.apiprojeto.bean.TecnicoAssembler;
 import com.example.apiprojeto.domain.Tecnico;
+import com.example.apiprojeto.domain.enums.Perfil;
+import com.example.apiprojeto.exceptions.ObjectNotFoundException;
 import com.example.apiprojeto.repository.TecnicoRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,9 +16,22 @@ import java.util.Optional;
 public class TecnicosService {
 
     private final TecnicoRepository tecnicoRepository;
+    private final TecnicoAssembler tecnicoAssembler;
 
-    public Tecnico findById( Integer id){
-        return tecnicoRepository.findById(id)
-                .orElseThrow(()-> new IllegalArgumentException("NAO ENCONTRADO"));
+    public Optional<Tecnico> findById(Integer id) {
+
+        return Optional.ofNullable(tecnicoRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("Tecnico nao registrado")));
+
+    }
+
+    public List<Tecnico> findAll(){
+
+        return tecnicoRepository.findAll();
+    }
+
+    public Tecnico save(Tecnico tecnico){
+        tecnico.setPerfis(Perfil.CLIENTE);
+        tecnico.setPerfis(Perfil.TECNICO);
+        return tecnicoRepository.save(tecnico);
     }
 }
