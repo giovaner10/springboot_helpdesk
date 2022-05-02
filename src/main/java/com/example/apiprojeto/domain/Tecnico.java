@@ -2,36 +2,52 @@ package com.example.apiprojeto.domain;
 
 import com.example.apiprojeto.domain.enums.Perfil;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.UniqueElements;
+import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
+@AllArgsConstructor
 public class Tecnico {
 
     @Id
-    @GeneratedValue( strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @NotBlank
     private String nome;
+    @CPF
+    @Column(unique = true)
     private String cpf;
+    @Email
+    @Column(unique = true)
     private String email;
+    @NotBlank
     private String senha;
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Integer> perfis = new HashSet<>();
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataCriacao = LocalDate.now();
 
+    @OneToMany(mappedBy = "tecnico")
+    @JsonIgnore
+    private List<Chamados> chamados = new ArrayList<>();
 
 
-    public Tecnico(Integer id, String nome, String cpf, String email, String senha) {
+    public Tecnico(Long id) {
         this.id = id;
-        this.nome = nome;
-        this.cpf = cpf;
-        this.email = email;
-        this.senha = senha;
 
     }
 
@@ -39,20 +55,19 @@ public class Tecnico {
 
     }
 
-
-    public void setPerfis(Perfil perfil){
+    public void setPerfis(Perfil perfil) {
         this.perfis.add(perfil.getCodigo());
     }
 
-    public Set<Perfil> getPerfis(){
+    public Set<Perfil> getPerfis() {
         return this.perfis.stream().map(x -> Perfil.toEnum(x)).collect(Collectors.toSet());
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -87,7 +102,6 @@ public class Tecnico {
     public void setSenha(String senha) {
         this.senha = senha;
     }
-
 
 
     public LocalDate getDataCriacao() {
