@@ -5,6 +5,7 @@ import com.example.apiprojeto.service.TecnicosService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -33,6 +34,7 @@ public class TecnicosController {
 
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Tecnico> save(@RequestBody @Valid Tecnico tecnico){
 
@@ -41,6 +43,7 @@ public class TecnicosController {
 
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Tecnico> update(@RequestBody @Valid Tecnico tecnico, @PathVariable Long id){
         tecnico.setId(id);
@@ -50,6 +53,7 @@ public class TecnicosController {
     }
 
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Tecnico> delete( @PathVariable Long id){
 
