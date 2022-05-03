@@ -5,6 +5,7 @@ import com.example.apiprojeto.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -21,15 +22,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private UserService service;
     private JWTUtil jwtUtil;
+    private Environment environment;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
         http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
         http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, service));
+        http.headers().frameOptions().disable();
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/**/admin/**").hasRole("ADMIN")
+                .antMatchers("/h2-console**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
