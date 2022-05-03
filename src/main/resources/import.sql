@@ -1,1 +1,0 @@
-insert into pessoa(nome, cpf, email, senhhga) values ("giovane", "124", "giovanerrq", "123")
